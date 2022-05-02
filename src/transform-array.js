@@ -19,21 +19,13 @@ function transform(arr) {
     throw new Error("'arr' parameter must be an instance of the Array!");
   }
   if (arr = []) return arr;
-  for (i = 0; i < arr.length; i++) {
-    if (arr[i]!='undefined') {
-      newArr.push(arr[i]);
-    }
-    if (arr[i]=='--discard-next') {
-      i++;
-    }
-    if (arr[i]=='--discard-prev' && i>0) {
-      newArr.pop();
-    }
-    if (arr[i]!='undefined') {
-      newArr.push(arr[i]);
-    }
-  }
-  return newArr;
+
+  return arr.map((item, i) => item === "--double-next" && i < arr.length - 1 ? arr[i + 1] : item)
+    .map((item, i) => item === "--double-prev" && i > 0 ? arr[i - 1] : item)
+    .filter((item, i) => arr[i + 1] !== "--discard-prev")
+    .filter((item, i) => arr[i - 1] !== "--discard-next")
+    .filter(item => item !== '--double-next' && item !== '--double-prev'
+      && item !== '--discard-prev' && item !== '--discard-next');
 }
 module.exports = {
   transform
